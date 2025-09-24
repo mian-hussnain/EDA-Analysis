@@ -6,19 +6,20 @@ import seaborn as sns
 import plotly.graph_objects as go
 
 # Title
-st.title("E-commerce Data EDA")
+st.title("📊 E-commerce Data EDA")
 
 # Upload CSV
 uploaded_file = st.file_uploader("Upload your CSV file", type=["csv"])
 if uploaded_file:
     df = pd.read_csv(uploaded_file)
     
-    # Convert date
+    # Convert date column
     df['order_date'] = pd.to_datetime(df['order_date'], errors='coerce')
 
-    # Drop IDs from numeric analysis
+    # Define ID columns to exclude
     id_cols = ['order_id', 'customer_id', 'product_id']
     numeric_cols = [col for col in df.select_dtypes(include=['int64','float64']).columns if col not in id_cols]
+    categorical_cols = df.select_dtypes(include=['object']).columns.tolist()
 
     st.subheader("Dataset Preview")
     st.write(df.head())
@@ -28,28 +29,44 @@ if uploaded_file:
     st.write(df.describe(include="all"))
     st.write("Missing values:", df.isnull().sum())
 
+    # --------------------
     # Univariate Analysis
+    # --------------------
     st.subheader("Univariate Analysis (Numeric Variables)")
     col = st.selectbox("Select numeric column", numeric_cols)
+
     fig, ax = plt.subplots()
-    sns.histplot(df[col], kde=True, ax=ax)
+
+    # Detect discrete vs continuous
+    if df[col].nunique() < 10:  # discrete (like quantity)
+        sns.countplot(x=col, data=df, ax=ax)
+    else:  # continuous (like price, discount)
+        sns.histplot(df[col], kde=True, ax=ax)
+
     st.pyplot(fig)
 
+    # --------------------
     # Categorical Analysis
+    # --------------------
     st.subheader("Categorical Analysis")
-    cat_col = st.selectbox("Select categorical column", df.select_dtypes(include=['object']).columns)
-    fig, ax = plt.subplots()
-    df[cat_col].value_counts().plot(kind="bar", ax=ax)
-    st.pyplot(fig)
+    if categorical_cols:
+        cat_col = st.selectbox("Select categorical column", categorical_cols)
+        fig, ax = plt.subplots()
+        df[cat_col].value_counts().plot(kind="bar", ax=ax)
+        st.pyplot(fig)
 
+    # --------------------
     # Bivariate: Category vs Price
+    # --------------------
     st.subheader("Bivariate Analysis (Category vs Price)")
     fig, ax = plt.subplots()
     sns.boxplot(x="category", y="price", data=df, ax=ax)
     plt.xticks(rotation=45)
     st.pyplot(fig)
 
-    # Time Series Candlestick Chart
+    # --------------------
+    # Time Series Candlestick
+    # --------------------
     st.subheader("Time-based Analysis (Candlestick Chart)")
     df['date'] = df['order_date'].dt.date
     daily = df.groupby('date').agg(
@@ -75,7 +92,9 @@ if uploaded_file:
     )
     st.plotly_chart(fig)
 
+    # --------------------
     # Correlation Heatmap
+    # --------------------
     st.subheader("Correlation Heatmap")
     fig, ax = plt.subplots()
     sns.heatmap(df[numeric_cols].corr(), annot=True, cmap="coolwarm", ax=ax)
