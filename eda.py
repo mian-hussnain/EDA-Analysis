@@ -8,6 +8,9 @@ import plotly.graph_objects as go
 # Page config
 st.set_page_config(page_title="E-commerce EDA", layout="wide")
 
+# Global style (smaller fonts everywhere)
+sns.set_context("paper", font_scale=0.7)
+
 # Title
 st.title("📊 E-commerce Data EDA with Cleaning")
 
@@ -87,11 +90,15 @@ if uploaded_file:
         st.subheader("Univariate Analysis (Numeric)")
         if numeric_cols:
             col = st.selectbox("Select numeric column", numeric_cols)
-            fig, ax = plt.subplots(figsize=(4, 2))  # smaller size
+            fig, ax = plt.subplots(figsize=(5, 3))
             if df[col].nunique() < 10:
                 sns.countplot(x=col, data=df, ax=ax)
             else:
                 sns.histplot(df[col], kde=True, ax=ax)
+            ax.set_title(f"{col} Distribution", fontsize=8)
+            ax.set_xlabel(col, fontsize=7)
+            ax.set_ylabel("Count", fontsize=7)
+            ax.tick_params(axis='both', labelsize=7)
             st.pyplot(fig, clear_figure=True)
         else:
             st.warning("No numeric columns found!")
@@ -101,8 +108,12 @@ if uploaded_file:
         st.subheader("Categorical Analysis")
         if categorical_cols:
             cat_col = st.selectbox("Select categorical column", categorical_cols)
-            fig, ax = plt.subplots(figsize=(4, 2))  # smaller size
+            fig, ax = plt.subplots(figsize=(5, 3))
             df[cat_col].value_counts().plot(kind="bar", ax=ax)
+            ax.set_title(f"{cat_col} Counts", fontsize=8)
+            ax.set_xlabel(cat_col, fontsize=7)
+            ax.set_ylabel("Count", fontsize=7)
+            ax.tick_params(axis='both', labelsize=7)
             st.pyplot(fig, clear_figure=True)
         else:
             st.warning("No categorical columns found!")
@@ -111,9 +122,13 @@ if uploaded_file:
     with tab4:
         st.subheader("Bivariate Analysis (Category vs Price)")
         if "category" in df.columns and "price" in df.columns:
-            fig, ax = plt.subplots(figsize=(4, 2))  # smaller
+            fig, ax = plt.subplots(figsize=(6, 4))
             sns.boxplot(x="category", y="price", data=df, ax=ax)
-            plt.xticks(rotation=45)
+            ax.set_title("Price Distribution by Category", fontsize=8)
+            ax.set_xlabel("Category", fontsize=7)
+            ax.set_ylabel("Price", fontsize=7)
+            ax.tick_params(axis='both', labelsize=7)
+            plt.xticks(rotation=45, fontsize=7)
             st.pyplot(fig, clear_figure=True)
         else:
             st.warning("Category or Price column not found!")
@@ -140,10 +155,14 @@ if uploaded_file:
             )])
             fig.update_layout(
                 title="Daily Price Movement (OHLC)",
+                title_font=dict(size=12),
                 xaxis_title="Date",
                 yaxis_title="Price",
-                height=300,  # smaller candlestick
-                margin=dict(l=10, r=10, t=30, b=20)
+                xaxis_title_font=dict(size=10),
+                yaxis_title_font=dict(size=10),
+                font=dict(size=9),
+                xaxis_rangeslider_visible=False,
+                height=300
             )
             st.plotly_chart(fig, use_container_width=True)
         else:
@@ -152,8 +171,11 @@ if uploaded_file:
         # Correlation heatmap
         st.subheader("Correlation Heatmap")
         if numeric_cols:
-            fig, ax = plt.subplots(figsize=(4, 2))  # smaller heatmap
-            sns.heatmap(df[numeric_cols].corr(), annot=True, cmap="coolwarm", ax=ax)
+            fig, ax = plt.subplots(figsize=(6, 4))
+            sns.heatmap(df[numeric_cols].corr(), annot=True, cmap="coolwarm",
+                        annot_kws={"size":6}, ax=ax)
+            ax.set_title("Correlation Heatmap", fontsize=8)
+            ax.tick_params(axis='both', labelsize=7)
             st.pyplot(fig, clear_figure=True)
         else:
             st.warning("No numeric columns for correlation heatmap!")
