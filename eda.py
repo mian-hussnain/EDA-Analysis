@@ -90,7 +90,7 @@ if uploaded_file:
         st.subheader("Univariate Analysis (Numeric)")
         if numeric_cols:
             col = st.selectbox("Select numeric column", numeric_cols)
-            fig, ax = plt.subplots(figsize=(5, 3))
+            fig, ax = plt.subplots(figsize=(4, 2))
             if df[col].nunique() < 10:
                 sns.countplot(x=col, data=df, ax=ax)
             else:
@@ -108,7 +108,7 @@ if uploaded_file:
         st.subheader("Categorical Analysis")
         if categorical_cols:
             cat_col = st.selectbox("Select categorical column", categorical_cols)
-            fig, ax = plt.subplots(figsize=(5, 3))
+            fig, ax = plt.subplots(figsize=(4, 2))
             df[cat_col].value_counts().plot(kind="bar", ax=ax)
             ax.set_title(f"{cat_col} Counts", fontsize=8)
             ax.set_xlabel(cat_col, fontsize=7)
@@ -122,7 +122,7 @@ if uploaded_file:
     with tab4:
         st.subheader("Bivariate Analysis (Category vs Price)")
         if "category" in df.columns and "price" in df.columns:
-            fig, ax = plt.subplots(figsize=(6, 4))
+            fig, ax = plt.subplots(figsize=(4, 2))
             sns.boxplot(x="category", y="price", data=df, ax=ax)
             ax.set_title("Price Distribution by Category", fontsize=8)
             ax.set_xlabel("Category", fontsize=7)
@@ -171,7 +171,7 @@ if uploaded_file:
         # Correlation heatmap
         st.subheader("Correlation Heatmap")
         if numeric_cols:
-            fig, ax = plt.subplots(figsize=(6, 4))
+            fig, ax = plt.subplots(figsize=(4, 2))
             sns.heatmap(df[numeric_cols].corr(), annot=True, cmap="coolwarm",
                         annot_kws={"size":6}, ax=ax)
             ax.set_title("Correlation Heatmap", fontsize=8)
