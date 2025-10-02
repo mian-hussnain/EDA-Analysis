@@ -87,7 +87,7 @@ if uploaded_file:
         st.subheader("Univariate Analysis (Numeric)")
         if numeric_cols:
             col = st.selectbox("Select numeric column", numeric_cols)
-            fig, ax = plt.subplots(figsize=(6, 4))  # smaller size
+            fig, ax = plt.subplots(figsize=(5, 3))  # smaller size
             if df[col].nunique() < 10:
                 sns.countplot(x=col, data=df, ax=ax)
             else:
@@ -101,7 +101,7 @@ if uploaded_file:
         st.subheader("Categorical Analysis")
         if categorical_cols:
             cat_col = st.selectbox("Select categorical column", categorical_cols)
-            fig, ax = plt.subplots(figsize=(6, 4))  # smaller size
+            fig, ax = plt.subplots(figsize=(5, 3))  # smaller size
             df[cat_col].value_counts().plot(kind="bar", ax=ax)
             st.pyplot(fig, clear_figure=True)
         else:
@@ -111,7 +111,7 @@ if uploaded_file:
     with tab4:
         st.subheader("Bivariate Analysis (Category vs Price)")
         if "category" in df.columns and "price" in df.columns:
-            fig, ax = plt.subplots(figsize=(8, 5))  # smaller than before
+            fig, ax = plt.subplots(figsize=(6, 4))  # smaller
             sns.boxplot(x="category", y="price", data=df, ax=ax)
             plt.xticks(rotation=45)
             st.pyplot(fig, clear_figure=True)
@@ -142,8 +142,8 @@ if uploaded_file:
                 title="Daily Price Movement (OHLC)",
                 xaxis_title="Date",
                 yaxis_title="Price",
-                height=400,  # reduced height
-                margin=dict(l=20, r=20, t=40, b=20)
+                height=300,  # smaller candlestick
+                margin=dict(l=10, r=10, t=30, b=20)
             )
             st.plotly_chart(fig, use_container_width=True)
         else:
@@ -152,7 +152,7 @@ if uploaded_file:
         # Correlation heatmap
         st.subheader("Correlation Heatmap")
         if numeric_cols:
-            fig, ax = plt.subplots(figsize=(7, 5))  # smaller heatmap
+            fig, ax = plt.subplots(figsize=(6, 4))  # smaller heatmap
             sns.heatmap(df[numeric_cols].corr(), annot=True, cmap="coolwarm", ax=ax)
             st.pyplot(fig, clear_figure=True)
         else:
