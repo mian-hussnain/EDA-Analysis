@@ -178,4 +178,4 @@ if uploaded_file:
             ax.tick_params(axis='both', labelsize=7)
             st.pyplot(fig, clear_figure=True)
         else:
-            st.warning("No numeric columns for cor
+            st.warning("No numeric columns for correlation heatmap!")
