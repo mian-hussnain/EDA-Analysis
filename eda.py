@@ -12,7 +12,7 @@ st.set_page_config(page_title="E-commerce EDA", layout="wide")
 sns.set_context("paper", font_scale=0.7)
 
 # Title
-st.title("📊 E-commerce Data EDA with Cleaning")
+st.title("E-commerce Data EDA with Cleaning")
 
 # Upload CSV
 uploaded_file = st.file_uploader("Upload your CSV file", type=["csv"])
